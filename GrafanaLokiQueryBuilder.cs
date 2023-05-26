@@ -45,7 +45,7 @@ public sealed class GrafanaLokiQueryBuilder
         _builder.Append($" | {field} != ``");
     }
 
-    public void FilterJsonBy(string field, string value, bool exact = false)
+    public void FilterJsonBy(string field, string value, bool exact = true)
     {
         if (exact)
             _builder.Append($" | {field} = \"{value}\"");

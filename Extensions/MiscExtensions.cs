@@ -1,21 +1,7 @@
-using System.Text.Json;
-
 namespace Simplz.Grafana.Loki;
 
 public static class MiscExtensions
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, };
-
-    public static string Decode(this string text)
-    {
-        return Uri.UnescapeDataString(text);
-    }
-
-    public static string Encode(this string text)
-    {
-        return Uri.EscapeDataString(text);
-    }
-
     public static DateTime GetFromEpoch(this string epoch)
     {
         if (long.TryParse(epoch, out var number))
