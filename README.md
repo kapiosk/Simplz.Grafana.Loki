@@ -1,1 +1,2 @@
 # Simplz.Grafana.Loki
+
