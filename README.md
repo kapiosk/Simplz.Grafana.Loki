@@ -38,11 +38,22 @@ Please note that sequence of operations, excluding start/end, matters
 
 ```csharp
 GrafanaLokiQueryBuilder queryBuilder = new();
-queryBuilder.SelectApp("app");
+
+//Filter my label app having value "appName", mandatory
+queryBuilder.SelectApp("appName");
+
+//Set from time of logs to retrieve, mandatory
 queryBuilder.AddStartTime(DateTimeOffset.UtcNow.AddHours(-5));
+
+//Convert log to Json object
 queryBuilder.ExpandAsJson();
+
+//Filter by field level with value "error"
 queryBuilder.FilterJsonByValue("level", "error");
+
+//Filter by field source, containing string "Microsoft" essentially calls queryBuilder.FilterJsonByRegex("source", "Microsoft.*");
 queryBuilder.FilterJsonByValue("source", "Microsoft", exact: false);
+
 var rawLogs = await GetLogsAsync<LokiResponse<Result>>(queryBuilder);
 var timestampedLogs = response.ConvertToTimestampedDictionary();
 ```
