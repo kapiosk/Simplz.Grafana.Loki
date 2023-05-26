@@ -10,12 +10,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
 	<ItemGroup>
-		<None Include="LICENSE" Pack="true" PackagePath="LICENSE" />
+		<None Include="LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
 		<None Include="README.md" Pack="true" PackagePath="README.md" />
 	</ItemGroup>
 
