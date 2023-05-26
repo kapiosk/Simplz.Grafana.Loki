@@ -28,7 +28,7 @@ builder.Services.AddGranafaLokiService(builder.Configuration.GetRequiredSection(
 ## Sample log retrieval
 
 ```csharp
-var rawLogs = await GranafaLokiService.GetLogsAsync(appName, DateTimeOffset.UtcNow.AddHours(-HoursBefore));
+var rawLogs = await GranafaLokiService.GetLogsAsync("appName", DateTimeOffset.UtcNow.AddHours(-5));
 var timestampedLogs = response.ConvertToTimestampedDictionary();
 ```
 
@@ -38,11 +38,11 @@ Please note that sequence of operations, excluding start/end, matters
 
 ```csharp
 GrafanaLokiQueryBuilder queryBuilder = new();
-queryBuilder.SelectApp(app);
-queryBuilder.AddStartTime(startime);
+queryBuilder.SelectApp("app");
+queryBuilder.AddStartTime(DateTimeOffset.UtcNow.AddHours(-5));
 queryBuilder.ExpandAsJson();
-queryBuilder.FilterJsonBy("level", "error");
-queryBuilder.FilterJsonBy("source", "Microsoft", exact: false);
-var rawLogs = await GetLogsAsync<LokiResponse<Result>>(queryBuilder, token);
+queryBuilder.FilterJsonByValue("level", "error");
+queryBuilder.FilterJsonByValue("source", "Microsoft", exact: false);
+var rawLogs = await GetLogsAsync<LokiResponse<Result>>(queryBuilder);
 var timestampedLogs = response.ConvertToTimestampedDictionary();
 ```

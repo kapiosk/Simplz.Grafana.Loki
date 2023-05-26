@@ -45,12 +45,17 @@ public sealed class GrafanaLokiQueryBuilder
         _builder.Append($" | {field} != ``");
     }
 
-    public void FilterJsonBy(string field, string value, bool exact = true)
+    public void FilterJsonByRegex(string field, string regex)
+    {
+        _builder.Append($" | {field} =~ \"{regex}\"");
+    }
+
+    public void FilterJsonByValue(string field, string value, bool exact = true)
     {
         if (exact)
             _builder.Append($" | {field} = \"{value}\"");
         else
-            _builder.Append($" | {field} =~ \"{value}.*\"");
+            FilterJsonByRegex(field, $"{value}.*");
     }
 
     public QueryString BuildQueryString()

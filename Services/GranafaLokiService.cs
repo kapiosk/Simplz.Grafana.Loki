@@ -58,6 +58,7 @@ public sealed class GranafaLokiService
         return await _httpClient.GetFromJsonAsync<LokiResponse<List<string>>>($"/loki/api/v1/label/{label}/values{queryString}", token);
     }
 
+    //TODO: Bulk write logs
     public async Task<string?> WriteLogAsync(string logMessage, string appName, DateTime? timestamp = null, CancellationToken token = default)
     {
         if (!timestamp.HasValue)
