@@ -2,7 +2,7 @@
 
 ## Add package to project
 
-```cli
+```shell
 dotnet add package Simplz.Grafana.Loki
 ```
 
@@ -21,22 +21,22 @@ dotnet add package Simplz.Grafana.Loki
 
 ## Inject dependancy
 
-```csharp
+```cs
 builder.Services.AddGranafaLokiService(builder.Configuration.GetRequiredSection("GranafaLokiOptions"));
 ```
 
 ## Sample log retrieval
 
-```csharp
+```cs
 var rawLogs = await GranafaLokiService.GetLogsAsync("appName", DateTimeOffset.UtcNow.AddHours(-5));
-var timestampedLogs = response.ConvertToTimestampedDictionary();
+var timestampedLogs = response.ConvertToLogItems();
 ```
 
 ## Sample log retrieval with querybuilder
 
 Please note that sequence of operations, excluding start/end, matters
 
-```csharp
+```cs
 GrafanaLokiQueryBuilder queryBuilder = new();
 
 //Filter my label app having value "appName", mandatory
@@ -55,5 +55,5 @@ queryBuilder.FilterJsonByValue("level", "error");
 queryBuilder.FilterJsonByValue("source", "Microsoft", exact: false);
 
 var rawLogs = await GetLogsAsync<LokiResponse<Result>>(queryBuilder);
-var timestampedLogs = response.ConvertToTimestampedDictionary();
+var timestampedLogs = response.ConvertToLogItems();
 ```

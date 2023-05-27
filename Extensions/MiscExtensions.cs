@@ -15,7 +15,13 @@ public static class MiscExtensions
         return epoch.ToString();
     }
 
-    //TODO: Change to class with timestamp and data dictionary
+    public static IEnumerable<Models.LogItem> ConvertToLogItems(this Models.LokiResponse<Models.Result>? response)
+    {
+        if (response is not null && response.status.Equals("success"))
+            return response.data.result.Select(s => new Models.LogItem(s.stream, s.values.First().First().GetFromEpoch())).OrderByDescending(s => s.Timestamp);
+        return Enumerable.Empty<Models.LogItem>();
+    }
+
     public static IEnumerable<Dictionary<string, string>> ConvertToTimestampedDictionary(this Models.LokiResponse<Models.Result>? response)
     {
         if (response is not null && response.status.Equals("success"))
