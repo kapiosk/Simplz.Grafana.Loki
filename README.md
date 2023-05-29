@@ -29,7 +29,7 @@ builder.Services.AddGranafaLokiService(builder.Configuration.GetRequiredSection(
 
 ```cs
 var rawLogs = await GranafaLokiService.GetLogsAsync("appName", DateTimeOffset.UtcNow.AddHours(-5));
-var timestampedLogs = response.ConvertToLogItems();
+var timestampedLogs = rawLogs.ConvertToLogItems();
 ```
 
 ## Sample log retrieval with querybuilder
@@ -51,9 +51,9 @@ queryBuilder.ExpandAsJson();
 //Filter by field level with value "error"
 queryBuilder.FilterJsonByValue("level", "error");
 
-//Filter by field source, containing string "Microsoft" essentially calls queryBuilder.FilterJsonByRegex("source", "Microsoft.*");
+//Filter by field source, containing string "Microsoft" essentially calls:
+//queryBuilder.FilterJsonByRegex("source", "Microsoft.*");
 queryBuilder.FilterJsonByValue("source", "Microsoft", exact: false);
 
-var rawLogs = await GetLogsAsync<LokiResponse<Result>>(queryBuilder);
-var timestampedLogs = response.ConvertToLogItems();
+var timestampedLogs = await GranafaLokiService.GetLogItemsAsync(queryBuilder);
 ```

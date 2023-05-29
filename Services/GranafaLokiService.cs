@@ -30,6 +30,16 @@ public sealed class GranafaLokiService
         return await GetLogsAsync<T>(queryBuilder.BuildQueryString(), token);
     }
 
+    public async Task<IEnumerable<Models.LogItem>> GetLogItemsAsync(GrafanaLokiQueryBuilder queryBuilder, CancellationToken token = default)
+    {
+        return (await GetLogsAsync<LokiResponse<Result>>(queryBuilder.BuildQueryString(), token)).ConvertToLogItems();
+    }
+
+    public async Task<LokiResponse<Result>?> GetLogsAsync(GrafanaLokiQueryBuilder queryBuilder, CancellationToken token = default)
+    {
+        return await GetLogsAsync<LokiResponse<Result>>(queryBuilder.BuildQueryString(), token);
+    }
+
     public async Task<T?> GetLogsAsync<T>(QueryString queryString, CancellationToken token = default)
     {
         if (typeof(T) == typeof(string))
