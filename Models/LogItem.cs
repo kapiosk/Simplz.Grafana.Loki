@@ -8,6 +8,6 @@ public sealed record LogItem
         Timestamp = timestamp;
     }
 
-    public Dictionary<string, string> Data { get; init; }
-    public DateTime Timestamp { get; init; }
+    public Dictionary<string, string> Data { get; set; }
+    public DateTime Timestamp { get; set; }
 }

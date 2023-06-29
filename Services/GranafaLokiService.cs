@@ -1,7 +1,11 @@
-using System.Net.Http.Json;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using Simplz.Grafana.Loki.Models;
+#if NET
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Http;
+#endif
+
+//TODO: .netstandard2 read
 
 namespace Simplz.Grafana.Loki.Services;
 
@@ -14,6 +18,7 @@ public sealed class GranafaLokiService
         _httpClient = httpClient;
     }
 
+#if NET
     public async Task<LokiResponse<Result>?> GetLogsAsync(string app, DateTimeOffset startime, DateTimeOffset? endTime = null, CancellationToken token = default)
     {
         GrafanaLokiQueryBuilder queryBuilder = new();
@@ -30,7 +35,7 @@ public sealed class GranafaLokiService
         return await GetLogsAsync<T>(queryBuilder.BuildQueryString(), token);
     }
 
-    public async Task<IEnumerable<Models.LogItem>> GetLogItemsAsync(GrafanaLokiQueryBuilder queryBuilder, CancellationToken token = default)
+    public async Task<IEnumerable<LogItem>> GetLogItemsAsync(GrafanaLokiQueryBuilder queryBuilder, CancellationToken token = default)
     {
         return (await GetLogsAsync<LokiResponse<Result>>(queryBuilder.BuildQueryString(), token)).ConvertToLogItems();
     }
@@ -60,13 +65,16 @@ public sealed class GranafaLokiService
 
     public async Task<LokiResponse<List<string>>?> GetLabelValuesAsync(string label, DateTimeOffset startime, DateTimeOffset? endTime = null, CancellationToken token = default)
     {
-        List<KeyValuePair<string, string?>> queryItems = new();
-        queryItems.Add(new("start", startime.ToUnixTimeSeconds().ToString()));
+        List<KeyValuePair<string, string?>> queryItems = new()
+        {
+            new("start", startime.ToUnixTimeSeconds().ToString())
+        };
         if (endTime.HasValue)
             queryItems.Add(new("end", endTime.Value.ToUnixTimeSeconds().ToString()));
         QueryString queryString = QueryString.Create(queryItems);
         return await _httpClient.GetFromJsonAsync<LokiResponse<List<string>>>($"/loki/api/v1/label/{label}/values{queryString}", token);
     }
+#endif
 
     //TODO: Bulk write logs
     public async Task<string?> WriteLogAsync(string logMessage, string appName, DateTime? timestamp = null, CancellationToken token = default)
@@ -84,7 +92,12 @@ public sealed class GranafaLokiService
                     },
             }
         };
+
+#if NET
         StringContent content = new(System.Text.Json.JsonSerializer.Serialize(logData), Encoding.UTF8, "application/json");
+#else
+        StringContent content = new(Newtonsoft.Json.JsonConvert.SerializeObject(logData), Encoding.UTF8, "application/json");
+#endif
         var response = await _httpClient.PostAsync("/loki/api/v1/push", content);
         return await response.Content.ReadAsStringAsync();
     }

@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.AspNetCore.Http;
 
 namespace Simplz.Grafana.Loki;
 
@@ -58,10 +57,12 @@ public sealed class GrafanaLokiQueryBuilder
             FilterJsonByRegex(field, $"{value}.*");
     }
 
-    public QueryString BuildQueryString()
+#if NET
+    public Microsoft.AspNetCore.Http.QueryString BuildQueryString()
     {
         _queryItems.Add("limit", "1000");
         _queryItems.Add("query", _builder.ToString());
-        return QueryString.Create(_queryItems); ;
+        return Microsoft.AspNetCore.Http.QueryString.Create(_queryItems);
     }
+#endif
 }

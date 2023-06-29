@@ -22,6 +22,7 @@ public static class MiscExtensions
         return Enumerable.Empty<Models.LogItem>();
     }
 
+#if NET
     public static IEnumerable<Dictionary<string, string>> ConvertToTimestampedDictionary(this Models.LokiResponse<Models.Result>? response)
     {
         if (response is not null && response.status.Equals("success"))
@@ -39,4 +40,5 @@ public static class MiscExtensions
             }
         }
     }
+#endif
 }
